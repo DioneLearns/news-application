@@ -2,6 +2,17 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class CustomUser(AbstractUser):
+    """
+    Custom user model extending Django's AbstractUser with role-based permissions.
+    
+    Provides enhanced user management with predefined roles (reader, journalist, editor)
+    and subscription tracking for personalized content delivery.
+    
+    Attributes:
+        role (CharField): User's system role determining permissions and access
+        subscribed_journalists (ManyToManyField): Journalists user follows
+        subscribed_publishers (ManyToManyField): Publishers user follows
+    """
     ROLE_CHOICES = [
         ('reader', 'Reader'),
         ('journalist', 'Journalist'),

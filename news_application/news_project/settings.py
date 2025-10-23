@@ -5,7 +5,6 @@ Django settings for news_project project.
 from pathlib import Path
 import os
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Static files settings
@@ -74,7 +73,6 @@ DATABASES = {
     }
 }
 
-# MariaDB/MySQL (Production - UNCOMMENT WHEN READY)
 '''DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -85,7 +83,6 @@ DATABASES = {
         'PORT': '3306',
     }
 }'''
-
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
