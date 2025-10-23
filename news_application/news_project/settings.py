@@ -4,8 +4,7 @@ Django settings for news_project project.
 
 from pathlib import Path
 import os
-import pymysql
-pymysql.install_as_MySQLdb()
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -68,25 +67,24 @@ TEMPLATES = [
 # Database Configuration
 # ======================
 # SQLite (Development - CURRENTLY ACTIVE)
-'''DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-}'''
+}
 
 # MariaDB/MySQL (Production - UNCOMMENT WHEN READY)
-
-DATABASES = {
+'''DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'news_app_db',
         'USER': 'root2',
-        'PASSWORD': 'ihatemaria',  # Set your MariaDB root password
+        'PASSWORD': 'ihatemaria',
         'HOST': 'localhost',
         'PORT': '3306',
     }
-}
+}'''
 
 
 LANGUAGE_CODE = 'en-us'
