@@ -1,1 +1,1 @@
-https://github.com/DioneLearns/news-application
+https://github.com/DioneLearns/news-application.git
