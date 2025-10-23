@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #333; color: white; padding: 10px; text-align: center; }
+        .content { padding: 20px; border: 1px solid #ddd; }
+        .footer { text-align: center; padding: 10px; font-size: 12px; color: #666; }
+        .btn { display: inline-block; padding: 10px 20px; background: #007cba; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>News Application</h1>
+        </div>
+        <div class="content">
+            <h2>New Article Published!</h2>
+            <p>Hello {{ subscriber.username }},</p>
+            <p>A new article has been published that you might be interested in:</p>
+            
+            <h3>{{ article.title }}</h3>
+            <p><strong>By:</strong> {{ article.author.username }}</p>
+            {% if article.publisher %}
+            <p><strong>Publisher:</strong> {{ article.publisher.name }}</p>
+            {% endif %}
+            <p>{{ article.content|truncatewords:50 }}</p>
+            
+            <a href="{{ site_url }}" class="btn">Read Full Article</a>
+        </div>
+        <div class="footer">
+            <p>You received this email because you're subscribed to News Application.</p>
+            <p><a href="{{ site_url }}/unsubscribe/">Unsubscribe</a></p>
+        </div>
+    </div>
+</body>
+</html>

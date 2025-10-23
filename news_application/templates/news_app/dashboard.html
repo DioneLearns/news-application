@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - NewsHub{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-speedometer2 me-2"></i>Dashboard</h1>
+    <span class="role-badge">{{ user.role|title }}</span>
+</div>
+
+<!-- Main Articles Section -->
+<div class="dashboard-section">
+    <h2 class="mb-4"><i class="bi bi-newspaper me-2"></i>My Articles</h2>
+    
+    {% if articles %}
+    <div class="row">
+        {% for article in articles %}
+        <div class="col-12 mb-4">
+            <div class="article-card">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h4 class="text-primary">{{ article.title }}</h4>
+                    <span class="badge {% if article.is_approved %}bg-success{% else %}bg-warning{% endif %} approval-badge">
+                        {% if article.is_approved %}APPROVED{% else %}PENDING{% endif %}
+                    </span>
+                </div>
+                
+                <div class="article-meta mb-3">
+                    <div class="d-flex flex-wrap gap-3 text-muted">
+                        <span><i class="bi bi-person me-1"></i>By {{ article.author.username }}</span>
+                        {% if article.publisher %}
+                        <span><i class="bi bi-building me-1"></i>{{ article.publisher.name }}</span>
+                        {% else %}
+                        <span><i class="bi bi-person-badge me-1"></i>Independent</span>
+                        {% endif %}
+                        <span><i class="bi bi-clock me-1"></i>{{ article.created_at|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+                
+                <p class="mb-3">{{ article.content|truncatewords:40 }}</p>
+                
+                <div class="d-flex gap-2">
+                    {% if article.pk %}
+                    <a href="{% url 'update_article' article.pk %}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-pencil me-1"></i>Edit
+                    </a>
+                    <a href="{% url 'delete_article' article.pk %}" class="btn btn-outline-danger btn-sm"
+                       onclick="return confirm('Are you sure you want to delete this article?');">
+                        <i class="bi bi-trash me-1"></i>Delete
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-4">
+        <i class="bi bi-file-earmark-plus display-1 text-muted mb-3"></i>
+        <p class="text-muted">No articles found.</p>
+        {% if user.role == 'journalist' %}
+        <a href="{% url 'create_article' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Create Your First Article
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Journalist Independent Publications Section -->
+{% if user.role == 'journalist' %}
+<div class="dashboard-section" style="border-left-color: #27ae60;">
+    <h2 class="mb-4"><i class="bi bi-star me-2"></i>My Independent Publications</h2>
+    <p class="text-muted mb-4">Articles published without a publisher</p>
+    
+    <!-- Independent Articles -->
+    <div class="mb-4">
+        <h4 class="text-success mb-3">
+            <i class="bi bi-file-text me-2"></i>Independent Articles ({{ user.independent_articles.count }})
+        </h4>
+        
+        {% for article in user.independent_articles %}
+        <div class="article-card" style="border-left: 4px solid #27ae60;">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5 class="text-success">{{ article.title }}</h5>
+                <span class="badge {% if article.is_approved %}bg-success{% else %}bg-warning{% endif %} approval-badge">
+                    {% if article.is_approved %}APPROVED{% else %}PENDING{% endif %}
+                </span>
+            </div>
+            
+            <div class="article-meta mb-3">
+                <div class="d-flex flex-wrap gap-3 text-muted">
+                    <span><i class="bi bi-person-badge me-1"></i>Independent</span>
+                    <span><i class="bi bi-clock me-1"></i>{{ article.created_at|date:"M d, Y" }}</span>
+                </div>
+            </div>
+            
+            <p class="mb-3">{{ article.content|truncatewords:30 }}</p>
+            
+            {% if article.pk %}
+            <a href="{% url 'update_article' article.pk %}" class="btn btn-outline-success btn-sm">
+                <i class="bi bi-pencil me-1"></i>Edit
+            </a>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="text-center py-3">
+            <i class="bi bi-file-earmark-plus text-muted mb-2"></i>
+            <p class="text-muted">No independent articles yet.</p>
+            <a href="{% url 'create_article' %}" class="btn btn-outline-success btn-sm">
+                Create Independent Article
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Independent Newsletters -->
+    <div>
+        <h4 class="text-primary mb-3">
+            <i class="bi bi-envelope me-2"></i>Independent Newsletters ({{ user.independent_newsletters.count }})
+        </h4>
+        
+        {% for newsletter in user.independent_newsletters %}
+        <div class="article-card" style="border-left: 4px solid #3498db;">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5 class="text-primary">{{ newsletter.title }}</h5>
+                <span class="badge {% if newsletter.is_approved %}bg-success{% else %}bg-warning{% endif %} approval-badge">
+                    {% if newsletter.is_approved %}APPROVED{% else %}PENDING{% endif %}
+                </span>
+            </div>
+            
+            <div class="article-meta mb-3">
+                <div class="d-flex flex-wrap gap-3 text-muted">
+                    <span><i class="bi bi-person-badge me-1"></i>Independent</span>
+                    <span><i class="bi bi-clock me-1"></i>{{ newsletter.created_at|date:"M d, Y" }}</span>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-3">
+            <i class="bi bi-envelope-plus text-muted mb-2"></i>
+            <p class="text-muted">No independent newsletters yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Editor Tools Section -->
+{% if user.role == 'editor' %}
+<div class="dashboard-section" style="border-left-color: #f39c12;">
+    <h2 class="mb-4"><i class="bi bi-tools me-2"></i>Editor Tools</h2>
+    <p class="text-muted mb-3">Manage and approve content from journalists</p>
+    <a href="{% url 'approve_articles' %}" class="btn btn-warning">
+        <i class="bi bi-check-circle me-2"></i>Review Pending Articles
+    </a>
+</div>
+{% endif %}
+{% endblock %}

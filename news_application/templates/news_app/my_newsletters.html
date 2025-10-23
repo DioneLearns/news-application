@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}My Newsletters - NewsHub{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-envelope me-2"></i>My Newsletters</h1>
+    <a href="{% url 'create_newsletter' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i>Create Newsletter
+    </a>
+</div>
+
+{% if newsletters %}
+<div class="row">
+    {% for newsletter in newsletters %}
+    <div class="col-12 mb-4">
+        <div class="article-card">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h3 class="text-primary">{{ newsletter.title }}</h3>
+                <span class="badge {% if newsletter.is_approved %}bg-success{% else %}bg-warning{% endif %} approval-badge">
+                    {% if newsletter.is_approved %}
+                    <i class="bi bi-check-lg me-1"></i>APPROVED
+                    {% else %}
+                    <i class="bi bi-clock me-1"></i>PENDING
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="article-meta mb-3">
+                <div class="d-flex flex-wrap gap-3 text-muted">
+                    <span><i class="bi bi-calendar me-1"></i>{{ newsletter.created_at|date:"M d, Y" }}</span>
+                    {% if newsletter.publisher %}
+                    <span><i class="bi bi-building me-1"></i>{{ newsletter.publisher.name }}</span>
+                    {% else %}
+                    <span><i class="bi bi-person-badge me-1"></i>Independent</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <p class="mb-3">{{ newsletter.content|truncatewords:40 }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="article-card text-center py-5">
+    <i class="bi bi-envelope-plus display-1 text-muted mb-3"></i>
+    <h3 class="text-muted">No Newsletters Yet</h3>
+    <p class="text-muted mb-4">Create your first newsletter to share updates with subscribers.</p>
+    <a href="{% url 'create_newsletter' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-2"></i>Create Newsletter
+    </a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - News Application{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4">Welcome to News Application</h1>
+            <p class="lead">Your source for the latest news and updates from journalists around the world.</p>
+            
+            {% if not user.is_authenticated %}
+            <hr class="my-4">
+            <p>Join our community to access all features. Choose your role and get started today!</p>
+            
+            <div class="row mt-4">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Reader</h5>
+                            <p class="card-text">Browse approved articles and subscribe to your favorite journalists</p>
+                            <a href="{% url 'register' %}?role=reader" class="btn btn-outline-primary">Join as Reader</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Journalist</h5>
+                            <p class="card-text">Create articles and newsletters for editor approval</p>
+                            <a href="{% url 'register' %}?role=journalist" class="btn btn-outline-success">Join as Journalist</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Editor</h5>
+                            <p class="card-text">Review and approve content from journalists</p>
+                            <a href="{% url 'register' %}?role=editor" class="btn btn-outline-warning">Join as Editor</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <p class="mb-2">Already have an account?</p>
+                <a href="{% url 'login' %}" class="btn btn-primary">Login to Your Account</a>
+            </div>
+            {% else %}
+            <div class="alert alert-success mt-4">
+                <h4>Welcome back, {{ user.username }}!</h4>
+                <p>You are logged in as a <strong>{{ user.role }}</strong>. Continue exploring the application.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Approved Articles Display -->
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h2>Latest Approved Articles</h2>
+        {% if articles %}
+            {% for article in articles %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ article.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        By {{ article.author.username }} 
+                        <span class="badge bg-success ms-2">Approved</span>
+                    </h6>
+                    <p class="card-text">{{ article.content|truncatewords:30 }}</p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Published: {{ article.created_at|date:"M d, Y" }}
+                            {% if article.publisher %}
+                            | Publisher: {{ article.publisher.name }}
+                            {% endif %}
+                        </small>
+                    </p>
+                    {% if user.is_authenticated and user.role == 'reader' %}
+                    <a href="{% url 'article_detail' article.id %}" class="btn btn-outline-primary btn-sm">Read More</a>
+                    <a href="{% url 'subscribe_journalist' article.author.id %}" class="btn btn-outline-success btn-sm">Subscribe to Author</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">
+                <p>No approved articles available at the moment. Check back later!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Approved Newsletters Display -->
+{% if newsletters %}
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h2>Latest Newsletters</h2>
+        {% for newsletter in newsletters %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ newsletter.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    By {{ newsletter.author.username }}
+                    <span class="badge bg-success ms-2">Approved</span>
+                </h6>
+                <p class="card-text">{{ newsletter.content|truncatewords:30 }}</p>
+                <p class="card-text">
+                    <small class="text-muted">
+                        Published: {{ newsletter.created_at|date:"M d, Y" }}
+                        {% if newsletter.publisher %}
+                        | Publisher: {{ newsletter.publisher.name }}
+                        {% endif %}
+                    </small>
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

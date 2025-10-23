@@ -1,0 +1,17 @@
+News Application Documentation
+==============================
+
+Welcome to the News Application documentation!
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   modules
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

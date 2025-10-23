@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Newsletters - NewsHub{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="row mb-5">
+    <div class="col-12 text-center">
+        <h1 class="display-4 fw-bold text-primary mb-3">
+            <i class="bi bi-envelope me-2"></i>All Newsletters
+        </h1>
+        <p class="lead text-muted">Stay updated with the latest newsletters from our journalists</p>
+    </div>
+</div>
+
+{% if newsletters %}
+<!-- Newsletters Grid -->
+<div class="row">
+    {% for newsletter in newsletters %}
+    <div class="col-lg-6 col-xl-4 mb-4">
+        <div class="article-card h-100">
+            <!-- Newsletter Header -->
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title fw-bold text-dark">{{ newsletter.title }}</h5>
+                <span class="badge bg-success">NEWSLETTER</span>
+            </div>
+            
+            <!-- Newsletter Meta -->
+            <div class="article-meta mb-3">
+                <div class="d-flex flex-wrap gap-2 text-muted small">
+                    <span>
+                        <i class="bi bi-person me-1"></i>By {{ newsletter.author.username }}
+                    </span>
+                    <span>
+                        <i class="bi bi-clock me-1"></i>{{ newsletter.created_at|date:"M d, Y" }}
+                    </span>
+                    {% if newsletter.publisher %}
+                    <span>
+                        <i class="bi bi-building me-1"></i>{{ newsletter.publisher.name }}
+                    </span>
+                    {% else %}
+                    <span>
+                        <i class="bi bi-building me-1"></i>Independent
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Newsletter Content -->
+            <p class="card-text text-muted mb-3">{{ newsletter.content|truncatewords:50 }}</p>
+            
+            <!-- Newsletter Footer -->
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">
+                    <i class="bi bi-calendar me-1"></i>{{ newsletter.created_at|date:"M d, Y" }}
+                </small>
+                
+                <!-- Newsletter Actions -->
+                {% if user.is_authenticated and user == newsletter.author %}
+                <div class="article-actions">
+                    <div class="btn-group btn-group-sm">
+                        <a href="{% url 'update_newsletter' newsletter.pk %}" 
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'delete_newsletter' newsletter.pk %}" 
+                           class="btn btn-outline-danger btn-sm"
+                           onclick="return confirm('Are you sure you want to delete this newsletter?');">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<!-- No Newsletters Available -->
+<div class="row">
+    <div class="col-12">
+        <div class="article-card text-center py-5">
+            <i class="bi bi-envelope display-1 text-muted mb-3"></i>
+            <h4 class="text-muted mb-3">No Newsletters Available Yet</h4>
+            <p class="text-muted mb-4">Check back later for newsletter updates from our journalists.</p>
+            {% if user.is_authenticated and user.role == 'journalist' %}
+            <a href="{% url 'create_newsletter' %}" class="btn btn-primary">
+                <i class="bi bi-envelope-plus me-2"></i>Create First Newsletter
+            </a>
+            {% endif %}
+            <div class="mt-3">
+                <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Additional Styling -->
+<style>
+    .article-card {
+        border: 1px solid #e9ecef;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .article-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    }
+    
+    .article-meta {
+        color: #6c757d;
+        font-size: 0.9em;
+    }
+    
+    .card-title {
+        color: #2c3e50;
+        line-height: 1.3;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .display-4 {
+            font-size: 2rem;
+        }
+        
+        .article-card {
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+        
+        .btn-group-sm .btn {
+            padding: 0.25rem 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
