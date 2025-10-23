@@ -30,7 +30,7 @@ A Django-based news publishing platform that allows journalists to create articl
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/DioneLearns/literate-octo-journey.git
+   git clone https://github.com/DioneLearns/news-application.git
    cd news_application
 Create and activate virtual environment:
 
